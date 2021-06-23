@@ -3,8 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var config = require('./config')
 
-mongoose.connect('mongodb+srv://root:MIchael88**@cluster0.mgvz6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect(config.str, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
