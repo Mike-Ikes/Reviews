@@ -3,9 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var config = require('./config')
 
-mongoose.connect(config.str, {
+mongoose.connect('mongodb://localhost:27017/review_service', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -19,8 +18,7 @@ mongoose.connect(config.str, {
 })
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var reviewRouter = require('./routes/reviewRoute')
+var reviewRouter = require('./routes/reviewsRoute')
 
 var app = express();
 
@@ -32,7 +30,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/review', reviewRouter);
+app.use('/reviews', reviewRouter);
 
 module.exports = app;

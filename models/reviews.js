@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// const Photo = require('./photosModel')
 
 const reviewSchema = new Schema({
+    id: Number,
     product_id: Number,
-    review_id: Number,
     rating: Number,
-    summary: String,
-    recommend: Boolean,
-    response: String,
-    body: String,
     date: Date,
+    summary: String,
+    body: String,
+    recommend: Boolean,
+    reported: Boolean,
     reviewer_name: String,
+    reviewer_email: String,
+    response: String,
     helpfulness: Number,
-    photos: [Object],
 });
 
-const review = mongoose.model('review', reviewSchema);
-module.exports = review;
+const reviewsModel = mongoose.model('reviews', reviewSchema);
+module.exports = reviewsModel;
