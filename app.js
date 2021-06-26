@@ -32,4 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/reviews', reviewRouter);
 
-module.exports = app;
+module.exports = {
+  app: app,
+}
