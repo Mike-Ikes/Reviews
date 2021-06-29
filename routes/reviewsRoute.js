@@ -22,12 +22,14 @@ router.get('/', async function(req, res) {
   if (sort === 'relevant') {
     sort = {'helpfulness': -1, 'date': -1}
   }
-  let reviews = await Review.find({product_id: product_id, reported: false}, {_id: 0, reviewer_email: 0, reported: 0, __v: 0}).sort(sort).skip(count * (page - 1)).limit(parseInt(count)).lean()
+  let reviews = await Review.find({product_id: product_id, reported: false}, {_id: 0, product_id: 0, reviewer_email: 0, reported: 0, __v: 0}).sort(sort).skip(count * (page - 1)).limit(parseInt(count)).lean()
   for await (let review of reviews) {
     review.date = DateTime.fromMillis(review.date).toISO();
     let num = review.recommend ? 1 : 0;
     review.recommend = num;
-    review['photos'] = await Photo.find({review_id: review.id}, {_id: 0, __v: 0}).lean();
+    review.review_id = review.id
+    delete review.id;
+    review['photos'] = await Photo.find({review_id: review.review_id}, {_id: 0, __v: 0}).lean();
   }
   res.send({results: reviews});
 });
@@ -80,7 +82,7 @@ router.post('/:id', async function(req, res) {
 // endpoint route for Meta Data
 
 router.get('/:id/meta', async function(req, res) {
-  const {id} = req.params;
+  const { id } = req.params;
   let characteristics = {};
   let ratings = {};
   let recommended = {};
@@ -109,7 +111,7 @@ router.get('/:id/meta', async function(req, res) {
 // endpoint route for reporting review
 
 router.put('/:review_id/report', async function(req, res) {
-  const {review_id} = req.params
+  const { review_id } = req.params;
   await Review.updateOne({id: review_id}, {$set: {reported: true}})
   res.sendStatus(204);
 });
@@ -117,7 +119,7 @@ router.put('/:review_id/report', async function(req, res) {
 // endpoint route for helpful
 
 router.put('/:review_id/helpful', async function(req, res) {
-  const {review_id} = req.params
+  const { review_id } = req.params;
   await Review.updateOne({id: review_id}, {$inc: {helpfulness: 1}})
   res.sendStatus(204);
 });

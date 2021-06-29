@@ -11,9 +11,7 @@ mongoose.connect('mongodb://localhost:27017/review_service', {
   useFindAndModify: false,
   useCreateIndex: true
 })
-.then(() => {
-  console.log("Connected to Mongo!");
-})
+.then(() => {})
 .catch((err) => {
   console.log("Mongoose error: " + err)
 })

@@ -1,2 +1,3 @@
-config.js
-node_modules/superagent/dist/superagent.js
+node_modules/
+node_modules
+/Users/mikethegrunt/Desktop/HR Immersive/Reviews/node_modules
