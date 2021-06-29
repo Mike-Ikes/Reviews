@@ -11,7 +11,8 @@ const Counter = require('../models/counters')
 // endpoint route for reviews GET and POST request
 
 router.get('/', async function(req, res) {
-  let {page = 1, count = 5, sort, product_id} = req.query;
+
+  let { page = 1, count = 5, sort, product_id = 1 } = req.query;
   if (sort === 'helpful') {
     sort = {'helpfulness': -1};
   }
@@ -24,20 +25,23 @@ router.get('/', async function(req, res) {
   let reviews = await Review.find({product_id: product_id, reported: false}, {_id: 0, reviewer_email: 0, reported: 0, __v: 0}).sort(sort).skip(count * (page - 1)).limit(parseInt(count)).lean()
   for await (let review of reviews) {
     review.date = DateTime.fromMillis(review.date).toISO();
-    review['photos'] = await Photo.find({review_id: review.id}, {_id: 0, __v: 0}).lean()
+    let num = review.recommend ? 1 : 0;
+    review.recommend = num;
+    review['photos'] = await Photo.find({review_id: review.id}, {_id: 0, __v: 0}).lean();
   }
-  res.send(reviews);
+  res.send({results: reviews});
 });
 
-router.post('/', async function(req, res) {
-  let {product_id, rating, summary, body, recommend, name, email, photos, characteristics} = req.body
+router.post('/:id', async function(req, res) {
+  let {id} = req.params
+  let {rating, summary, body, recommend, name, email, photos, characteristics} = req.body
 
   const incrementor = await Counter.findOneAndUpdate({_id: 'id' }, {$inc:{review_id:1}}, {new: true});
   const reviewCount = incrementor.review_id;
   const date = new Date()
   await Review.create({
     id: reviewCount,
-    product_id: product_id,
+    product_id: id,
     rating: rating,
     date: date.getTime(),
     summary: summary,
@@ -75,8 +79,8 @@ router.post('/', async function(req, res) {
 
 // endpoint route for Meta Data
 
-router.get('/meta', async function(req, res) {
-  const id = req.query.product_id;
+router.get('/:id/meta', async function(req, res) {
+  const {id} = req.params;
   let characteristics = {};
   let ratings = {};
   let recommended = {};
