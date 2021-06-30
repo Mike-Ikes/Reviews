@@ -13,12 +13,13 @@ afterAll((done) => {
 
 describe('testing if body always returns an array', () => {
 
-  it('Should return an array for HTTP request on product with reviews', async () => {
+  it('Should return an array for GET request to "/reviews" on a product with reviews', async () => {
     const { body } = await request.get('/reviews');
     expect(Array.isArray(body.results)).toEqual(true);
   })
 
-  it('Should return an array for HTTP request on product without reviews', async () => {
+  it('Should return an array for GET request to "/reviews" on a product without reviews', async () => {
+    // product_id 3 has no reviews at this time
     const { body } = await request.get('/reviews?product_id=3');
     expect(Array.isArray(body.results)).toEqual(true);
   })
@@ -103,7 +104,7 @@ describe('API endpoint for POST "/reviews" creates new review for product', () =
       photos: [],
       characteristics: {},
     };
-    const postRequest = await request.post('/reviews/1')
+    await request.post('/reviews/1')
       .send(newReview)
       .expect(201);
   });
@@ -126,7 +127,7 @@ describe('API endpoint for POST "/reviews" creates new review for product', () =
   });
 
   it(`Database should NOT have previously created review`, async () => {
-    const deleteReview = await Review.findOneAndDelete({id: reviewCounter + 1});
+    await Review.findOneAndDelete({id: reviewCounter + 1});
     const reset = await Counter.findOneAndUpdate({_id: 'id'}, {$inc: {review_id: -1}}, {new: true});
     const deletedReview = await Review.find({id: reviewCounter + 1});
     expect(reset.review_id).toEqual(reviewCounter);
