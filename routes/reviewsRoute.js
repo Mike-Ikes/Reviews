@@ -22,14 +22,20 @@ router.get('/', async function(req, res) {
   if (sort === 'relevant') {
     sort = {'helpfulness': -1, 'date': -1};
   }
-  let reviews = await Review.find({product_id: product_id, reported: false}, {_id: 0, product_id: 0, reviewer_email: 0, reported: 0, __v: 0}).sort(sort).skip(count * (page - 1)).limit(parseInt(count)).lean();
+  let reviews = await Review.find({product_id: product_id, reported: false}, {_id: 0, product_id: 0, reviewer_email: 0, reported: 0, __v: 0}).sort(sort).skip(count * (page - 1)).limit(parseInt(count)).lean()
+    .catch((err) => {
+      console.log('hi', err)
+    })
   for await (let review of reviews) {
     review.date = DateTime.fromMillis(review.date).toISO();
     let num = review.recommend ? 1 : 0;
     review.recommend = num;
     review.review_id = review.id;
     delete review.id;
-    review['photos'] = await Photo.find({review_id: review.review_id}, {_id: 0, __v: 0}).lean();
+    review['photos'] = await Photo.find({review_id: review.review_id}, {_id: 0, __v: 0}).lean()
+      .catch((err) => {
+        console.log(err)
+      })
   }
   res.send({results: reviews});
 });

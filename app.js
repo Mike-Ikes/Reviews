@@ -5,7 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-mongoose.connect('mongodb://localhost:fetcher/review_service', {
+mongoose.connect('mongodb://mongodb:27017/review_service', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
