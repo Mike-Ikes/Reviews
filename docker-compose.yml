@@ -15,7 +15,7 @@ services:
     container_name: frontend
     image: mikethegrunt/frontendv2
     ports:
-      - "4200:4200"
+      - "80:4200"
     networks:
       - docker_network
     depends_on:
@@ -28,12 +28,12 @@ services:
       - 27017:27017
     networks:
       - docker_network
-    volumes:
-      - data/db:/data/db
-      - data/configdb:/data/configdb
-volumes:
-  - data/db:/data/db
-  - data/configdb:/data/configdb
+#     volumes:
+#       - mongoData:/data/db
+#       - mongoConfig:/data/configdb
+# volumes:
+#   mongoData:
+#   mongoConfig:
 networks:
   docker_network:
     driver: bridge
