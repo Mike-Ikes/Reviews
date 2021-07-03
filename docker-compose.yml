@@ -1,20 +1,41 @@
 version: '3.7'
 services:
-  web:
-    build: .
+  backend:
+    container_name: backend
+    image: mikethegrunt/backendv2
     ports:
       - "3000:3000"
+    networks:
+      - docker_network
     links:
       - mongodb
     depends_on:
       - mongodb
+  frontend:
+    container_name: frontend
+    image: mikethegrunt/frontendv2
+    ports:
+      - "4200:4200"
+    networks:
+      - docker_network
+    depends_on:
+      - mongodb
+      - backend
   mongodb:
-    image: mongo:latest
+    container_name: database
+    image: mikethegrunt/mongo_databasev2
     ports:
       - 27017:27017
+    networks:
+      - docker_network
     volumes:
-      - mongoData:/data/db
-      - mongoConfig:/data/configdb
+      - data/db:/data/db
+      - data/configdb:/data/configdb
 volumes:
-  mongoData:
-  mongoConfig:
+  - data/db:/data/db
+  - data/configdb:/data/configdb
+networks:
+  docker_network:
+    driver: bridge
+    ipam:
+      driver: default

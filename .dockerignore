@@ -1,2 +1,49 @@
 node_modules
 npm-debug.log
+
+# version: '3.7'
+# services:
+#   backend:
+#     container_name: backend
+#     image: mikethegrunt/backend
+#     ports:
+#       - "3000:3000"
+#     networks:
+#       - docker_network
+#     links:
+#       - mongodb
+#     depends_on:
+#       - mongodb
+#   frontend:
+#     container_name: frontend
+#     image: mikethegrunt/frontend
+#     ports:
+#       - "4200:4200"
+#     networks:
+#       - docker_network
+#     depends_on:
+#       - mongodb
+#       - backend
+#   mongodb:
+#     container_name: database
+#     image: mikethegrunt/mongo_database
+#     ports:
+#       - 27017:27017
+#     networks:
+#       - docker_network
+#     volumes:
+#       - mongoData:/var/lib/docker/volumes/reviews_mongoConfig/_data
+#       - mongoConfig:/var/lib/docker/volumes/reviews_mongoData/_data
+# volumes:
+#   mongoData:
+#     #external: true
+#     #name:
+#     #driver_opts:
+#       #backup_policy:
+#       #lifecycle_policy:
+#   mongoConfig:
+# network:
+#   docker_network:
+#     driver: bridge
+#     ipam:
+#       driver: default
